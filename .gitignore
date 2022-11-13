@@ -45,3 +45,7 @@ mongodb-places.json
 src/views/TrackJoinerHelp.vue
 src/views/TrackJoinerView.vue
 src/trackjoiner
+l*.pem
+l*.key
+l*.csr
+l*.srl

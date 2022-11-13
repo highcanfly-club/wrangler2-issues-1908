@@ -4,20 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev --local-protocol https -- npx vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "create-ca":"openssl req -x509 -sha256 -days 3562 -nodes -newkey rsa:4096 -subj '/CN=demo.highcanly.club/C=FR/L=Flers-en-Escrebieux' -keyout localhost-rootCA.key -out localhost-rootCA.pem",
+    "create-key":"openssl genrsa 4096 > localhost.key",
+    "create-csr":"openssl req -new -key localhost.key -subj '/CN=localhost/C=FR/L=Flers-en-Escrebieux'  > localhost.csr",
+    "create-crt":"openssl x509 -req -in localhost.csr -out localhost.pem -sha256 -CA localhost-rootCA.pem -days 3600 -CAkey localhost-rootCA.key -CAcreateserial -CAserial localhost-rootCA.srl",
+    "create-cert":"npm run create-ca && npm run create-key && npm run create-csr && npm run create-crt",
+    "dev": "NODE_EXTRA_CA_CERTS=`pwd`/localhost-rootCA.pem npx wrangler pages dev --local-protocol https -- npx vite",
+    "build": "vite build",
+    "preview": "NODE_EXTRA_CA_CERTS=`pwd`/localhost-rootCA.pem npx wrangler pages dev --local-protocol https -- npx vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.37"
+    "vue": "^3.2.45"
   },
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^0.1.2",
-    "@vitejs/plugin-vue": "^3.1.0",
+    "@vitejs/plugin-vue": "^3.2.0",
     "plugin": "^0.3.3",
-    "typescript": "^4.6.4",
-    "vite": "^3.1.0",
-    "vue-tsc": "^0.40.4",
-    "wrangler": "^2.1.6"
+    "typescript": "^4.8.4",
+    "vite": "^3.2.3",
+    "vue-tsc": "^1.0.9",
+    "wrangler": "^2.2.1"
   }
 }
